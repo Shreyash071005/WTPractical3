@@ -6,98 +6,90 @@
   <title>User Registration</title>
   <style>
     * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f0f2f5;
+    }
 
-.container {
-  width: 100%;
-  max-width: 400px;
-  padding: 20px;
-}
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
 
-.form-card {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
+    .form-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
 
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  transition: 0.3s;
-}
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      transition: 0.3s;
+      font-size: 16px;
+    }
 
-input:focus {
-  border-color: #4facfe;
-  outline: none;
-  box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
-}
+    input:focus {
+      border-color: #4facfe;
+      outline: none;
+      box-shadow: 0 0 5px rgba(79, 172, 254, 0.5);
+    }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #4facfe;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-size: 16px;
+    }
 
-button:hover {
-  background-color: #3b8ef2;
-}
+    button:hover {
+      background-color: #3b8ef2;
+    }
 
-.link {
-  text-align: center;
-  margin-top: 15px;
-}
+    .link {
+      text-align: center;
+      margin-top: 15px;
+    }
 
-.link a {
-  color: #4facfe;
-  text-decoration: none;
-}
+    .link a {
+      color: #4facfe;
+      text-decoration: none;
+    }
 
-.link a:hover {
-  text-decoration: underline;
-}
-
-ul#userList {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul#userList li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
+    .link a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <form id="registrationForm" class="form-card">
+    <form id="registrationForm" class="form-card" novalidate>
       <h2>User Registration</h2>
 
       <input type="text" id="name" placeholder="Full Name" required />
@@ -110,6 +102,62 @@ ul#userList li {
     </form>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const form = document.getElementById('registrationForm');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      // Simple validation
+      if (!name || !email || !password || !phone) {
+        alert('Please fill in all fields');
+        return;
+      }
+
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert('Please enter a valid email');
+        return;
+      }
+
+      // Password minimum length validation
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+
+      // Phone number validation (digits only, 10-15 length)
+      const phoneRegex = /^[0-9]{10,15}$/;
+      if (!phoneRegex.test(phone)) {
+        alert('Please enter a valid phone number (10-15 digits)');
+        return;
+      }
+
+      // Get existing users from localStorage
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+
+      // Check for duplicate email
+      const duplicate = users.find(user => user.email.toLowerCase() === email.toLowerCase());
+      if (duplicate) {
+        alert('This email is already registered.');
+        return;
+      }
+
+      // Add new user
+      users.push({ name, email, password, phone });
+      localStorage.setItem('users', JSON.stringify(users));
+
+      alert('Registration successful!');
+
+      // Reset the form
+      form.reset();
+    });
+  </script>
 </body>
 </html>
